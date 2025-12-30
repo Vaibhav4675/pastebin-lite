@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pastebin Lite
 
-## Getting Started
+A lightweight Pastebin-style application that allows users to create text pastes, share them via a link, and optionally expire them by **time-to-live (TTL)** or **maximum views**.
 
-First, run the development server:
+Built using **Next.js (App Router)**, **Node.js**, and **PostgreSQL**, and designed to work correctly in **serverless environments**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## ✨ Features
+
+- Create a paste with text content
+- Optional expiration:
+  - **TTL (seconds)**
+  - **Max views**
+- Shareable link for each paste
+- JSON API + HTML view
+- Deterministic time testing support
+- Serverless-safe persistence (no in-memory state)
+
+---
+
+## 🧩 Tech Stack
+
+- Next.js (App Router)
+- Node.js
+- PostgreSQL
+- Prisma ORM
+- Vercel (deployment)
+
+---
+
+## 📡 API Endpoints
+
+### Health Check
+```json
+GET /api/healthz
+```
+- Always returns HTTP `200`
+- JSON response reflects database connectivity
+
+---
+
+### Create Paste
+```json
+POST /api/pastes
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Request Body**
+```json
+{
+  "content": "Hello world",
+  "ttl_seconds": 60,
+  "max_views": 3
+}
+```
+- content (required, non-empty string)
+- ttl_seconds (optional, integer ≥ 1)
+- max_views (optional, integer ≥ 1)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Response**
+```json
+{
+  "id": "abc123",
+  "url": "https://<deployment-domain>/p/abc123"
+}
+```
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Fetch Paste (Counts as a View)
+```json
+GET /api/pastes/:id
+```
+**Response (200)**
+```json
+{
+  "id": "abc123",
+  "content": "Hello world",
+  "expires_at": "2025-01-01T00:00:00.000Z",
+  "remaining_views": 2
+}
+```
+**Unavailable cases (expired, max views reached, or not found):**
+- HTTP `404`
+- JSON error response
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
