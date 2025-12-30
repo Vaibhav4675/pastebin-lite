@@ -20,7 +20,7 @@ export default function NotFound() {
           textAlign: "center",
         }}
       >
-        <h1 style={{ fontSize: 24, fontWeight: 600 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 600, color: "red" }}>
           Paste not available
         </h1>
 
