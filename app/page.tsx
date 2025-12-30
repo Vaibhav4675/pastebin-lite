@@ -108,14 +108,14 @@ export default function Home() {
           {isSubmitting ? "Creating..." : "Create Paste"}
         </button>
 
-        {/* Errors clearly */}
+        {/* Errors  */}
         {error && (
           <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
-        {/* Success clearly */}
+        {/* Success  */}
         {created && (
           <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800">
             <div className="font-medium">Paste created!</div>
