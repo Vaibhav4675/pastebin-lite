@@ -7,6 +7,6 @@ export async function GET() {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (e) {
-    return NextResponse.json({ ok: false }, { status: 200 });
+    return NextResponse.json({ ok: false }, { status: 400 });
   }
 }
