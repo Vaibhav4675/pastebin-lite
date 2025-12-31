@@ -29,6 +29,51 @@ Built using **Next.js (App Router)**, **Node.js**, and **PostgreSQL**, and desig
 
 ---
 
+## Running the App Locally
+
+## Steps
+1. Install Dependencies
+   ```bash
+   npm install
+   ```
+2. Create a `.env` in the project root
+   ```env
+   DATABASE_URL=postgres://username:password@host:5432/dbname
+    ```
+   (Optional, for deterministic TTL testing)
+   ```
+   TEST_MODE=1
+    ```
+3. Run Database Migrations
+   ```bash
+   npx prisma migrate dev
+   ```
+4. Run development server
+   ```bash
+   npm run dev
+   ```
+   The app will be available at:
+   ```arduino
+   http://localhost:3000
+    ```
+---
+
+## Persistence Layer
+- **PostgreSQL** is used as the persistence layer.
+- **Prisma ORM** is used for database access and migrations.
+- All paste data, expiration timestamps, and view counts are stored in the database.
+- No in-memory or global mutable state is used, ensuring correctness in serverless environments.
+
+---
+
+## Important Design Decisions
+- **Serverless-safe architecture:** All mutable state lives in the database to ensure correctness across serverless invocations.
+- **View counting:** Both API (`GET /api/pastes/:id`) and HTML (`/p/:id`) access consume a view.
+- **Expiration handling:** Pastes become unavailable when TTL has expired, or maximum view count is reached. Unavailable pastes return HTTP `404`.
+- **Security:** Paste content is rendered as escaped text to prevent script execution.
+
+--- 
+
 ## 📡 API Endpoints
 
 ### Health Check
@@ -82,4 +127,18 @@ GET /api/pastes/:id
 **Unavailable cases (expired, max views reached, or not found):**
 - HTTP `404`
 - JSON error response
+  
+  ---
 
+## HTML View (Counts as a View)
+```bash
+GET /p/:id
+```
+- Renders paste content safely as HTML
+- Returns HTTP `404` if unavailable
+- HTML view consumes a view
+
+---
+
+## Links
+**Deployed App:**  [Pastebin](pastebin-lite-vert-rho.vercel.app)
